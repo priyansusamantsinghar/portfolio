@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
         configureServer(server) {
           server.middlewares.use(async (req, res, next) => {
             if (req.url === '/api/chat' && req.method === 'POST') {
+              console.log('API Request received. Loading env...');
               let body = ''
               req.on('data', chunk => { body += chunk })
               req.on('end', async () => {
@@ -21,6 +22,8 @@ export default defineConfig(({ mode }) => {
                   const data = JSON.parse(body)
                   const apiKey = env.GROQ_API_KEY
                   
+                  console.log('API Key found:', apiKey ? 'YES' : 'NO');
+
                   if (!apiKey) {
                     res.statusCode = 500
                     res.end(JSON.stringify({ error: 'API key not configured' }))
