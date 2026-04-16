@@ -60,7 +60,7 @@ export default function Chatbot({ isOpen, onClose }) {
         .filter(m => m.role !== 'system')
         .map(m => ({ role: m.role, content: m.content }))
 
-      const response = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
