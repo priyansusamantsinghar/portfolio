@@ -72,19 +72,26 @@ export default function Chatbot({ isOpen, onClose }) {
         }),
       })
 
-      if (!response.ok) {
-        const err = await response.json()
-        throw new Error(err.error?.message || 'API error')
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        console.error('Non-JSON response:', text);
+        data = { error: `Server returned non-JSON (${response.status}): ${text.substring(0, 50)}...` };
       }
 
-      const data = await response.json()
-      const reply = data.choices?.[0]?.message?.content || 'Sorry, I had trouble responding.'
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+      }
 
+      const reply = data.choices?.[0]?.message?.content || 'Sorry, I had trouble responding.'
       setMessages(prev => [...prev, { role: 'assistant', content: reply }])
     } catch (err) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `⚠️ error info: ${err.message}. Please check your Vercel Environment Variables and API keys.`,
+        content: `⚠️ Debug Info: ${err.message}. Please check Vercel Logs.`,
       }])
     } finally {
       setLoading(false)
@@ -107,7 +114,7 @@ export default function Chatbot({ isOpen, onClose }) {
         {/* Top bar */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold">
               PS
             </div>
             <div>
@@ -139,7 +146,7 @@ export default function Chatbot({ isOpen, onClose }) {
               className={`chat-message-enter flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.role === 'assistant' && (
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold mr-2 mt-1 shrink-0">
+                <div className="w-6 h-6 rounded-full bg-linear-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold mr-2 mt-1 shrink-0">
                   AI
                 </div>
               )}
@@ -157,7 +164,7 @@ export default function Chatbot({ isOpen, onClose }) {
 
           {loading && (
             <div className="flex justify-start chat-message-enter">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold mr-2 mt-1 shrink-0">
+              <div className="w-6 h-6 rounded-full bg-linear-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold mr-2 mt-1 shrink-0">
                 AI
               </div>
               <div className="bg-slate-800/80 rounded-2xl rounded-tl-sm border border-white/5">
