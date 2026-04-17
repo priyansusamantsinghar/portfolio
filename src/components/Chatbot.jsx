@@ -84,7 +84,7 @@ export default function Chatbot({ isOpen, onClose }) {
     } catch (err) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `⚠️ ${err.message}. Please check your API key and try again.`,
+        content: `⚠️ error info: ${err.message}. Please check your Vercel Environment Variables and API keys.`,
       }])
     } finally {
       setLoading(false)
