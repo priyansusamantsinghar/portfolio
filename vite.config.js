@@ -13,20 +13,18 @@ export default defineConfig(({ mode }) => {
         name: 'api-server-simulator',
         configureServer(server) {
           server.middlewares.use(async (req, res, next) => {
+            // AI Chatbot simulation
             if (req.url === '/api/chat' && req.method === 'POST') {
-              console.log('API Request received. Loading env...');
+              console.log('Chat API Request received.');
               let body = ''
               req.on('data', chunk => { body += chunk })
               req.on('end', async () => {
                 try {
                   const data = JSON.parse(body)
                   const apiKey = env.GROQ_API_KEY
-                  
-                  console.log('API Key found:', apiKey ? 'YES' : 'NO');
-
                   if (!apiKey) {
                     res.statusCode = 500
-                    res.end(JSON.stringify({ error: 'API key not configured' }))
+                    res.end(JSON.stringify({ error: 'API key not configured local' }))
                     return
                   }
 
@@ -56,6 +54,22 @@ export default defineConfig(({ mode }) => {
               })
               return
             }
+
+            // Contact form simulation
+            if (req.url === '/api/contact' && req.method === 'POST') {
+              console.log('Contact form local simulation');
+              res.setHeader('Content-Type', 'application/json')
+              res.end(JSON.stringify({ success: true, message: 'Message "sent" in local mode!' }))
+              return
+            }
+
+            // Health check simulation
+            if (req.url === '/api/health') {
+              res.setHeader('Content-Type', 'application/json')
+              res.end(JSON.stringify({ status: 'ok', local: true }))
+              return
+            }
+
             next()
           })
         }

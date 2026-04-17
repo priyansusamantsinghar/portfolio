@@ -20,9 +20,17 @@ export default function Contact() {
         body: JSON.stringify(formData),
       })
 
+      let data
+      const contentType = response.headers.get('content-type')
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json()
+      } else {
+        const text = await response.text()
+        data = { error: text || 'Non-JSON response received' }
+      }
+
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Failed to send message')
+        throw new Error(data.error || data.message || `Server error: ${response.status}`)
       }
 
       setStatus('success')
