@@ -1,23 +1,32 @@
 import { useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import Experience from './components/Experience'
-import Skills from './components/Skills'
-import Projects from './components/Projects'
-import Contact from './components/Contact'
 import Chatbot from './components/Chatbot'
+import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
+import Home from './pages/Home'
+import About from './pages/About'
+import ProjectsPage from './pages/ProjectsPage'
+import ContactPage from './pages/ContactPage'
 
 export default function App() {
   const [chatOpen, setChatOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-slate-200">
+      <ScrollToTop />
       <Navbar onChatOpen={() => setChatOpen(true)} />
-      <Hero onChatOpen={() => setChatOpen(true)} />
-      <Experience />
-      <Skills />
-      <Projects />
-      <Contact />
+      
+      <main>
+        <Routes>
+          <Route path="/" element={<Home onChatOpen={() => setChatOpen(true)} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+        </Routes>
+      </main>
+
+      <Footer />
 
       {/* Floating chat button */}
       <button

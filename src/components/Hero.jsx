@@ -54,7 +54,7 @@ export default function Hero({ onChatOpen }) {
         <div className="grid md:grid-cols-2 gap-16 items-center">
 
           {/* Left */}
-          <div>
+          <div className="text-center md:text-left">
             <div className="animate-fade-up">
               <span className="font-mono text-xs text-purple-400 tracking-widest uppercase border border-purple-800/50 px-3 py-1 bg-purple-950/30">
                 Available for opportunities
@@ -69,7 +69,7 @@ export default function Hero({ onChatOpen }) {
               </span>
             </h1>
 
-            <div className="animate-fade-up delay-200 mt-4 h-8 flex items-center gap-2">
+            <div className="animate-fade-up delay-200 mt-4 h-8 flex items-center justify-center md:justify-start gap-2">
               <span className="font-mono text-lg text-slate-300">{typedText}</span>
               <span className="animate-blink text-purple-400 font-mono text-lg">|</span>
             </div>
@@ -80,7 +80,7 @@ export default function Hero({ onChatOpen }) {
               passionate about clean APIs, responsive UIs, and developer tooling.
             </p>
 
-            <div className="animate-fade-up delay-400 mt-8 flex flex-wrap gap-4">
+            <div className="animate-fade-up delay-400 mt-8 flex flex-wrap justify-center md:justify-start gap-4">
               <a
                 href={resumeData.github}
                 target="_blank"

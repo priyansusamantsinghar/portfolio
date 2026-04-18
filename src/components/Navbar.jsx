@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { resumeData } from '../data/resume'
 
 export default function Navbar({ onChatOpen }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40)
@@ -11,7 +13,17 @@ export default function Navbar({ onChatOpen }) {
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
-  const links = ['About', 'Experience', 'Skills', 'Projects', 'Contact']
+  // Close menu on navigation
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location])
+
+  const links = [
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+    { name: 'Projects', path: '/projects' },
+    { name: 'Contact', path: '/contact' },
+  ]
 
   return (
     <nav
@@ -20,20 +32,22 @@ export default function Navbar({ onChatOpen }) {
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#" className="font-mono text-sm text-purple-400 tracking-widest uppercase hover:text-cyan-400 transition-colors">
+        <Link to="/" className="font-mono text-xl text-purple-400 font-bold tracking-widest uppercase hover:text-cyan-400 transition-colors">
           &lt;PS /&gt;
-        </a>
+        </Link>
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
           {links.map((l) => (
-            <a
-              key={l}
-              href={`#${l.toLowerCase()}`}
-              className="font-mono text-xs text-slate-400 hover:text-purple-400 transition-colors tracking-wider uppercase"
+            <Link
+              key={l.path}
+              to={l.path}
+              className={`font-mono text-xs tracking-wider uppercase transition-colors ${
+                location.pathname === l.path ? 'text-purple-400' : 'text-slate-400 hover:text-purple-400'
+              }`}
             >
-              {l}
-            </a>
+              {l.name}
+            </Link>
           ))}
           <button
             onClick={onChatOpen}
@@ -57,17 +71,19 @@ export default function Navbar({ onChatOpen }) {
         </button>
       </div>
 
+      {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden glass border-t border-purple-900/30 px-6 py-4 flex flex-col gap-4">
+        <div className="md:hidden glass border-t border-purple-900/30 px-6 py-4 flex flex-col gap-4 animate-in slide-in-from-top duration-300">
           {links.map((l) => (
-            <a
-              key={l}
-              href={`#${l.toLowerCase()}`}
-              onClick={() => setMenuOpen(false)}
-              className="font-mono text-xs text-slate-400 hover:text-purple-400 transition-colors tracking-wider uppercase"
+            <Link
+              key={l.path}
+              to={l.path}
+              className={`font-mono text-xs tracking-wider uppercase transition-colors ${
+                location.pathname === l.path ? 'text-purple-400' : 'text-slate-400 hover:text-purple-400'
+              }`}
             >
-              {l}
-            </a>
+              {l.name}
+            </Link>
           ))}
           <button
             onClick={() => { onChatOpen(); setMenuOpen(false) }}
