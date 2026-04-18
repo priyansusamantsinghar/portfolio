@@ -90,4 +90,19 @@ router.post('/chat', async (req, res) => {
 app.use('/api', router);
 app.use('/', router);
 
+// Error handler for all other routes starting with /api
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ 
+    error: 'API Endpoint Not Found', 
+    path: req.originalUrl,
+    message: 'Ensure you are calling a valid endpoint such as /api/chat or /api/contact' 
+  });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('SERVER ERROR:', err);
+  res.status(500).json({ error: 'Internal Server Error', details: err.message });
+});
+
 export default app;
